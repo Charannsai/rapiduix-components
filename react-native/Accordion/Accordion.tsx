@@ -67,16 +67,17 @@ const AccordionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#FFFFFF', // Set the entire screen background to pure white
   },
   screenTitle: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
+    color: '#333',
   },
   accordionContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF', // Set accordion background to pure white
     marginBottom: 10,
     borderRadius: 12,
     overflow: 'hidden',
@@ -91,7 +92,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#FFFFFF', // Set header background to pure white
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
   },
   headerText: {
     fontSize: 16,
@@ -100,9 +103,9 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF', // Set content background to pure white
     borderTopWidth: 1,
-    borderTopColor: '#eee',
+    borderTopColor: '#EEE',
   },
   contentText: {
     fontSize: 14,
