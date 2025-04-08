@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    home: AccordionScreen(),
+    debugShowCheckedModeBanner: false,
+  ));
+}
+
 class AccordionScreen extends StatelessWidget {
   const AccordionScreen({Key? key}) : super(key: key);
 
