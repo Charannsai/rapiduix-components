@@ -12,9 +12,9 @@ class AccordionScreen extends StatelessWidget {
 
   final List<Map<String, String>> faqs = const [
     {
-      'title': 'What is React Native?',
+      'title': 'What is Flutter?',
       'content':
-          'React Native is an open-source framework developed by Meta for building cross-platform mobile applications using JavaScript and React.'
+          'Flutter is an open-source framework that lets you build apps for mobile, web, and desktop using a single codebase. It was developed by Google and uses the Dart programming language.'
     },
     {
       'title': 'How does the accordion work?',
@@ -22,9 +22,9 @@ class AccordionScreen extends StatelessWidget {
           'An accordion is a UI component that lets users expand and collapse sections to show or hide content. It improves readability and keeps interfaces clean.'
     },
     {
-      'title': 'Is React Native good for production?',
+      'title': 'Is Flutter good for production?',
       'content':
-          'Yes, many companies use React Native in production including Facebook, Instagram, and Shopify. It allows faster development with a shared codebase for iOS and Android.'
+          'Yes, many companies use Flutter in production and Flutter is the most compelling framework for cross-platform development'
     },
   ];
 
