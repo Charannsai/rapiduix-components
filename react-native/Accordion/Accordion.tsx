@@ -1,117 +1,215 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  LayoutAnimation,
-  Platform,
-  UIManager,
-  ScrollView,
+import React, { useState, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Animated, 
+  Easing,
+  LayoutAnimation, 
+  Platform, 
+  UIManager 
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-if (Platform.OS === 'android') {
-  UIManager.setLayoutAnimationEnabledExperimental &&
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
-const AccordionItem = ({ title, content }) => {
-  const [expanded, setExpanded] = useState(false);
 
+const AccordionItem = ({ title, content, index, activeIndex, setActiveIndex }) => {
+  // Track if this item is expanded
+  const isExpanded = index === activeIndex;
+  
+  // Animation values
+  const animatedRotation = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
+  const animatedHeight = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
+  const animatedOpacity = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
+
+  // Toggle expansion
   const toggleExpand = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded(!expanded);
+    // Create custom animation config for smoother transitions
+    const customConfig = {
+      duration: 400,
+      update: {
+        duration: 400,
+        property: LayoutAnimation.Properties.scaleY,
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    };
+    LayoutAnimation.configureNext(customConfig);
+    
+    // Set the active index (or collapse if already active)
+    setActiveIndex(isExpanded ? null : index);
+    
+    // Animate the rotation for the arrow
+    Animated.timing(animatedRotation, {
+      toValue: isExpanded ? 0 : 1,
+      duration: 300,
+      easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+      useNativeDriver: true,
+    }).start();
+    
+    // Animate the height
+    Animated.timing(animatedHeight, {
+      toValue: isExpanded ? 0 : 1,
+      duration: 400,
+      easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+      useNativeDriver: false,
+    }).start();
+    
+    // Animate the opacity
+    Animated.timing(animatedOpacity, {
+      toValue: isExpanded ? 0 : 1,
+      duration: 400,
+      easing: Easing.bezier(0.4, 0.0, 0.2, 1),
+      useNativeDriver: true,
+    }).start();
   };
 
+  // Calculate rotated value for the arrow
+  const arrowRotation = animatedRotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  });
+
   return (
-    <View style={styles.accordionContainer}>
-      <TouchableOpacity onPress={toggleExpand} style={styles.header}>
-        <Text style={styles.headerText}>{title}</Text>
-        <AntDesign
-          name={expanded ? 'up' : 'down'}
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity 
+          activeOpacity={0.7}
+          style={styles.header} 
+          onPress={toggleExpand}
+        >
+          <Text style={styles.headerText}>{title}</Text>
+          <Animated.View style={{ transform: [{ rotate: arrowRotation }] }}>
+            <AntDesign
+          name={isExpanded ? 'up' : 'down'}
           size={18}
           color="#666"
         />
-      </TouchableOpacity>
-      {expanded && (
-        <View style={styles.content}>
-          <Text style={styles.contentText}>{content}</Text>
-        </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </View>
+
+      {isExpanded && (
+        <Animated.View 
+          style={[
+            styles.contentContainer, 
+            { 
+              opacity: animatedOpacity,
+              maxHeight: animatedHeight.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1000]
+              })
+            }
+          ]}
+        >
+          <View style={styles.content}>
+            <Text style={styles.contentText}>{content}</Text>
+          </View>
+        </Animated.View>
       )}
     </View>
   );
 };
 
-const AccordionScreen = () => {
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.screenTitle}>FAQs</Text>
+const StylishAccordion = ({ data, initialActiveIndex = null }) => {
+  const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
 
-      <AccordionItem
-        title="What is React Native?"
-        content="React Native is an open-source framework developed by Meta for building cross-platform mobile applications using JavaScript and React."
-      />
-      <AccordionItem
-        title="How does the accordion work?"
-        content="An accordion is a UI component that lets users expand and collapse sections to show or hide content. It improves readability and keeps interfaces clean."
-      />
-      <AccordionItem
-        title="Is React Native good for production?"
-        content="Yes, many companies use React Native in production including Facebook, Instagram, and Shopify. It allows faster development with a shared codebase for iOS and Android."
-      />
-    </ScrollView>
+  return (
+    <View style={styles.accordionContainer}>
+      {data.map((item, index) => (
+        <AccordionItem 
+          key={index} 
+          title={item.title} 
+          content={item.content} 
+          index={index}
+          activeIndex={activeIndex}
+          setActiveIndex={setActiveIndex}
+        />
+      ))}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  
   container: {
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-  },
-  screenTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-    color: '#333',
-  },
-  accordionContainer: {
-    backgroundColor: '#FFFFFF', 
-    marginBottom: 10,
-    borderRadius: 12,
+    marginBottom: 8,
+    borderRadius: 10,
     overflow: 'hidden',
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    backgroundColor: 'transparent',
+  },
+  headerContainer: {
+    borderBottomWidth: 0,
+    backgroundColor: 'transparent',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#FFFFFF', 
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
+    backgroundColor: 'transparent',
   },
   headerText: {
-    fontSize: 16,
     fontWeight: '600',
+    fontSize: 16,
     color: '#333',
+  },
+  arrow: {
+    fontSize: 14,
+    color: '#666',
+  },
+  contentContainer: {
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
   },
   content: {
     padding: 16,
-    backgroundColor: '#FFFFFF', 
-    borderTopWidth: 1,
-    borderTopColor: '#EEE',
+    backgroundColor: 'transparent',
   },
   contentText: {
     fontSize: 14,
+    lineHeight: 22,
     color: '#555',
-    lineHeight: 20,
   },
 });
 
-export default AccordionScreen;
+// Example usage
+const Accordion = () => {
+  const accordionData = [
+    {
+      title: 'Interactive Experience',
+      content: 'Our platform offers an unparalleled interactive experience designed to engage users at every level. The responsive interface adapts to your specific needs and preferences.'
+    },
+    {
+      title: 'Advanced Animation System',
+      content: 'Built with sophisticated animation techniques, this component provides buttery-smooth transitions between states. Every interaction feels natural and delightful.'
+    },
+    {
+      title: 'Customizable Design',
+      content: 'The styling system allows for complete customization to match your brand identity. Modify colors, typography, spacing, and animations to create a unique look and feel.'
+    },
+    {
+      title: 'Performance Optimized',
+      content: 'Engineered for maximum performance on all devices, this accordion component minimizes re-renders and utilizes hardware acceleration for animations whenever possible.'
+    }
+  ];
+
+  return (
+    <View style={appStyles.container}>
+     
+      <StylishAccordion data={accordionData} />
+    </View>
+  );
+};
+
+const appStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
+});
+
+export default Accordion;
