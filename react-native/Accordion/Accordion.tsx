@@ -198,7 +198,7 @@ const Accordion = () => {
 
   return (
     <View style={appStyles.container}>
-     
+     <Text style={appStyles.title}>FAQ's</Text>
       <StylishAccordion data={accordionData} />
     </View>
   );
@@ -209,6 +209,13 @@ const appStyles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 24,
+    textAlign: 'center',
+    color: '#333',
   },
 });
 
