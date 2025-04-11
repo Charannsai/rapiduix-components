@@ -1,6 +1,6 @@
 {
     "name": "Accordion",
     "framwork": "Flutter",
-    "path": "flutter/Accordion/Accordion.tsx",  
+    "path": "flutter/Accordion/Accordion.dart",  
     "category": "UI"
 }
