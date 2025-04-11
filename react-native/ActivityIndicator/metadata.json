@@ -1,0 +1,6 @@
+{
+    "name": "ActivityIndicator",
+    "framwork": "react-native",
+    "path": "react-native/ActivityIndicator/ActivityIndicator.tsx",
+    "category": "UI"
+}

@@ -6,9 +6,9 @@
         "category": "UI"
         },
         {
-        "name": "Navbar",
+        "name": "ActivityIndicator",
         "framwork": "react-native",
-        "path": "react-native/Navbar/Navbar.tsx",
+        "path": "react-native/ActivityIndicator/ActivityIndicator.tsx",
         "category": "UI"
         }
 ]
